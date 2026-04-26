@@ -72,7 +72,11 @@ export function App() {
         }}
       >
         <CodePanel code={lesson.code} activeLine={activeLine} />
-        <PredictionPanel question={lesson.question} choices={lesson.choices} />
+        <PredictionPanel
+          key={lesson.id}
+          question={lesson.question}
+          choices={lesson.choices}
+        />
       </div>
 
       <section style={{ marginBottom: 16 }}>
