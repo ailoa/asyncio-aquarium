@@ -67,9 +67,6 @@ export function App() {
         minHeight: "100vh",
         display: "grid",
         gridTemplateColumns: "240px 1fr 360px",
-        maxWidth: 1440,
-        margin: "0 auto",
-        width: "100%",
         background: "var(--bg)",
         color: "var(--text)",
         fontSize: 13,
@@ -169,7 +166,7 @@ export function App() {
           />
         </div>
 
-        {isComplete && <WhyCard explanation={lesson.explanation} />}
+        <WhyCard explanation={lesson.explanation} />
 
         <div
           style={{

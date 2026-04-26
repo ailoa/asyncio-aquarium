@@ -50,9 +50,10 @@ export function CodePanel({ code, activeLine, filename = "main.py", stepIndex, t
       </div>
 
       <div
+        className="scroll-y"
         style={{
           padding: "12px 0",
-          overflowX: "auto",
+          maxHeight: 400,
           fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
           fontSize: 13.5,
           lineHeight: 1.65,
@@ -70,7 +71,6 @@ export function CodePanel({ code, activeLine, filename = "main.py", stepIndex, t
               style={{
                 display: "grid",
                 gridTemplateColumns: "32px 36px 1fr",
-                minWidth: "max-content",
                 background: isActive ? "var(--accent-soft)" : "transparent",
                 position: "relative",
                 whiteSpace: "pre",

@@ -1,0 +1,124 @@
+:root {
+  --bg: #0b0d12;
+  --bg-panel: #11141b;
+  --bg-panel-alt: #161a23;
+  --bg-inset: #0e1117;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --text: #e6e8ef;
+  --text-dim: #8a92a3;
+  --text-mute: #5b6478;
+  --accent: #7aa2ff;
+  --accent-soft: rgba(122,162,255,0.14);
+  --accent-fg: #0b0d12;
+  --good: #7ed6a5;
+  --bad: #f08a98;
+  --warn: #e6c172;
+  --status-running: #7aa2ff;
+  --status-ready: #9aa3b6;
+  --status-waiting: #e6c172;
+  --status-sleeping: #c792ea;
+  --status-done: #7ed6a5;
+  --status-cancelled: #f08a98;
+
+  --syntax-kw: #c792ea;
+  --syntax-bi: #82b1ff;
+  --syntax-fn: #82aaff;
+  --syntax-str: #c3e88d;
+  --syntax-num: #f78c6c;
+  --syntax-com: #637396;
+  --syntax-id: #e6e8ef;
+  --syntax-p:  #a3acc2;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+}
+
+:root[data-theme="light"] {
+  --bg: #f6f7f9;
+  --bg-panel: #ffffff;
+  --bg-panel-alt: #f1f3f7;
+  --bg-inset: #fafbfd;
+  --border: rgba(15,20,30,0.08);
+  --border-strong: rgba(15,20,30,0.16);
+  --text: #181c25;
+  --text-dim: #5a6273;
+  --text-mute: #8a92a3;
+  --accent: #2c5cff;
+  --accent-soft: rgba(44,92,255,0.10);
+  --accent-fg: #ffffff;
+  --good: #2f9e6b;
+  --bad: #cc3a4f;
+  --warn: #a37b00;
+  --status-running: #2c5cff;
+  --status-ready: #7a8398;
+  --status-waiting: #a37b00;
+  --status-sleeping: #7c3aed;
+  --status-done: #2f9e6b;
+  --status-cancelled: #cc3a4f;
+
+  --syntax-kw: #7c3aed;
+  --syntax-bi: #1f6feb;
+  --syntax-fn: #1f6feb;
+  --syntax-str: #0a8a4a;
+  --syntax-num: #b45309;
+  --syntax-com: #8a92a3;
+  --syntax-id: #181c25;
+  --syntax-p:  #445065;
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+button { font: inherit; cursor: pointer; }
+
+code, pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* prism-like spans driven by our css vars */
+.token.keyword { color: var(--syntax-kw); }
+.token.builtin, .token.function { color: var(--syntax-fn); }
+.token.string { color: var(--syntax-str); }
+.token.number { color: var(--syntax-num); }
+.token.comment { color: var(--syntax-com); font-style: italic; }
+.token.punctuation, .token.operator { color: var(--syntax-p); }
+
+/* task chip enter animation */
+@keyframes chip-in {
+  from { opacity: 0; transform: translateY(-2px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+.task-chip {
+  animation: chip-in .22s cubic-bezier(.2,.7,.3,1);
+  transition: box-shadow .25s ease, border-color .25s ease, background .25s ease;
+}
+.task-chip[data-running="true"] {
+  box-shadow: 0 0 0 1px var(--status-running), 0 0 18px rgba(122,162,255,0.25);
+}
+:root[data-theme="light"] .task-chip[data-running="true"] {
+  box-shadow: 0 0 0 1px var(--status-running), 0 0 14px rgba(44,92,255,0.30);
+}
+
+/* gutter arrow pulse on active line */
+@keyframes pulse-arrow {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.code-line[data-active="true"] .gutter-arrow {
+  animation: pulse-arrow 1.4s ease-in-out infinite;
+}
+
+/* range slider tinted */
+input[type="range"] { accent-color: var(--accent); }
+
+/* sleek scrollbars in panels */
+.scroll-y { overflow: auto; }
+.scroll-y::-webkit-scrollbar { width: 10px; height: 10px; }
+.scroll-y::-webkit-scrollbar-thumb {
+  background: var(--border-strong); border-radius: 999px;
+  border: 2px solid transparent; background-clip: padding-box;
+}

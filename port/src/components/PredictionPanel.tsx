@@ -94,8 +94,7 @@ export function PredictionPanel({ question, choices }: Props) {
                 style={{
                   fontFamily: "ui-monospace, Menlo, monospace",
                   fontSize: 12.5,
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
+                  whiteSpace: "pre",
                   color: "var(--text)",
                 }}
               >
