@@ -4,7 +4,7 @@ export const lesson14: Lesson = {
   id: "lesson-14-to-thread",
   title: "Lesson 14 — asyncio.to_thread for blocking work",
   concept:
-    "asyncio.to_thread() runs a blocking function in a separate OS thread. The event loop stays free to run other tasks while the thread executes — the blocking work and the loop run truly in parallel.",
+    "An OS thread is a separate line of execution managed by the operating system — unlike asyncio tasks, which share one thread and take turns, OS threads can run at the same time on different CPU cores. asyncio.to_thread() moves a blocking function into one of these threads so the event loop stays free to run other tasks concurrently.",
   code: `import asyncio
 import time
 
