@@ -112,7 +112,7 @@ export function Sidebar({ lessons, currentId, completed, view, onSelect, onRefer
       <nav className="scroll-y" style={{ flex: 1, padding: "0 8px" }}>
         {lessons.map((l, i) => {
           const done = completed.has(l.id);
-          const current = l.id === currentId;
+          const current = l.id === currentId && view === "lesson";
           const shortTitle = l.title.replace(/^Lesson \d+\s*[—-]\s*/, "");
           return (
             <button
