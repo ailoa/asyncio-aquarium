@@ -63,7 +63,7 @@ export function App() {
           marginBottom: 16,
         }}
       >
-        <CodePanel code={lesson.code} />
+        <CodePanel code={lesson.code} activeLine={lesson.trace[stepIndex]?.line} />
         <PredictionPanel question={lesson.question} choices={lesson.choices} />
       </div>
 

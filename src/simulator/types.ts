@@ -1,16 +1,20 @@
-export type TraceEvent =
-  | { kind: "create_coroutine"; coroutineId: string; label: string; note?: string }
-  | { kind: "create_task"; parentTaskId: string; taskId: string; label: string; note?: string }
-  | { kind: "start_task"; taskId: string; note?: string }
-  | { kind: "print"; taskId: string; value: string; note?: string }
-  | { kind: "await"; taskId: string; targetId: string; yields: boolean; note?: string }
-  | { kind: "sleep"; taskId: string; duration: number; note?: string }
-  | { kind: "wake"; taskId: string; note?: string }
-  | { kind: "complete"; taskId: string; result?: string; note?: string }
-  | { kind: "cancel"; taskId: string; note?: string }
-  | { kind: "raise"; taskId: string; error: string; note?: string }
-  | { kind: "time_advance"; to: number; note?: string }
-  | { kind: "note"; text: string };
+type EventBase = { line?: number };
+
+export type TraceEvent = EventBase &
+  (
+    | { kind: "create_coroutine"; coroutineId: string; label: string; note?: string }
+    | { kind: "create_task"; parentTaskId: string; taskId: string; label: string; note?: string }
+    | { kind: "start_task"; taskId: string; note?: string }
+    | { kind: "print"; taskId: string; value: string; note?: string }
+    | { kind: "await"; taskId: string; targetId: string; yields: boolean; note?: string }
+    | { kind: "sleep"; taskId: string; duration: number; note?: string }
+    | { kind: "wake"; taskId: string; note?: string }
+    | { kind: "complete"; taskId: string; result?: string; note?: string }
+    | { kind: "cancel"; taskId: string; note?: string }
+    | { kind: "raise"; taskId: string; error: string; note?: string }
+    | { kind: "time_advance"; to: number; note?: string }
+    | { kind: "note"; text: string }
+  );
 
 export type TaskStatus =
   | "ready"
