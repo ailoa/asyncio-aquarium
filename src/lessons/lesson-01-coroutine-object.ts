@@ -14,7 +14,7 @@ print("done")`,
   choices: [
     {
       id: "a",
-      text: "hello\\ndone",
+      text: "hello\ndone",
       isCorrect: false,
       feedback:
         "No. The body of hello() never runs because the coroutine is never awaited or scheduled.",

@@ -23,28 +23,28 @@ asyncio.run(main())`,
   choices: [
     {
       id: "a",
-      text: "A\\nB\\nC\\nD",
+      text: "A\nB\nC\nD",
       isCorrect: false,
       feedback:
         "No. worker doesn't run yet — main keeps going until it awaits.",
     },
     {
       id: "b",
-      text: "A\\nC\\nB\\nD",
+      text: "A\nC\nB\nD",
       isCorrect: false,
       feedback:
         "No. create_task does not preempt. main prints C before worker starts.",
     },
     {
       id: "c",
-      text: "C\\nA\\nB\\nD",
+      text: "C\nA\nB\nD",
       isCorrect: true,
       feedback:
         "Correct. main prints C, then 'await task' yields. worker runs (A, then suspends at sleep(0), then B). main resumes and prints D.",
     },
     {
       id: "d",
-      text: "C\\nA\\nD\\nB",
+      text: "C\nA\nD\nB",
       isCorrect: false,
       feedback:
         "No. main is awaiting task — it can't resume until task is done.",

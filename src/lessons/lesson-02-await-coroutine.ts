@@ -34,7 +34,7 @@ asyncio.run(main())`,
     },
     {
       id: "c",
-      text: "hello\\n42",
+      text: "hello\n42",
       isCorrect: true,
       feedback:
         "Correct. await hello() runs hello's body (prints 'hello'), the call returns 42, then main prints x.",

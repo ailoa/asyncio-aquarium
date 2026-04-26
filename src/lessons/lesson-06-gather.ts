@@ -21,28 +21,28 @@ asyncio.run(main())`,
   choices: [
     {
       id: "a",
-      text: "A start\\nA end\\nB start\\nB end\\ndone",
+      text: "A start\nA end\nB start\nB end\ndone",
       isCorrect: false,
       feedback:
         "No. Both workers reach their sleep(0) before either resumes. They interleave.",
     },
     {
       id: "b",
-      text: "A start\\nB start\\nA end\\nB end\\ndone",
+      text: "A start\nB start\nA end\nB end\ndone",
       isCorrect: true,
       feedback:
         "Correct. Both workers run up to sleep(0), then both resume in scheduling order. main prints 'done' once both are complete.",
     },
     {
       id: "c",
-      text: "done\\nA start\\nB start\\nA end\\nB end",
+      text: "done\nA start\nB start\nA end\nB end",
       isCorrect: false,
       feedback:
         "No. main is awaiting gather; it can't print 'done' until both workers finish.",
     },
     {
       id: "d",
-      text: "A start\\nB start\\ndone",
+      text: "A start\nB start\ndone",
       isCorrect: false,
       feedback:
         "No. Each worker still has its second print after the sleep.",

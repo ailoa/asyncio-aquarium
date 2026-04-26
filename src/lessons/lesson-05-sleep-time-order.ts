@@ -23,28 +23,28 @@ asyncio.run(main())`,
   choices: [
     {
       id: "a",
-      text: "A start\\nA end\\nB start\\nB end",
+      text: "A start\nA end\nB start\nB end",
       isCorrect: false,
       feedback:
         "No. Both workers reach their sleep before either wakes. They overlap.",
     },
     {
       id: "b",
-      text: "A start\\nB start\\nA end\\nB end",
+      text: "A start\nB start\nA end\nB end",
       isCorrect: false,
       feedback:
         "No. B sleeps for less time, so B wakes first.",
     },
     {
       id: "c",
-      text: "A start\\nB start\\nB end\\nA end",
+      text: "A start\nB start\nB end\nA end",
       isCorrect: true,
       feedback:
         "Correct. Both workers print 'start' and go to sleep. B's wake time (1) comes before A's (2), so B ends first.",
     },
     {
       id: "d",
-      text: "B start\\nA start\\nB end\\nA end",
+      text: "B start\nA start\nB end\nA end",
       isCorrect: false,
       feedback:
         "No. A was created first, so A enters the ready queue first and prints 'A start' first.",

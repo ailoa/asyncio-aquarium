@@ -20,14 +20,14 @@ asyncio.run(main())`,
   choices: [
     {
       id: "a",
-      text: "worker\\nmain",
+      text: "worker\nmain",
       isCorrect: false,
       feedback:
         "No. create_task schedules worker but does not preempt main. main keeps running until sleep(0) yields.",
     },
     {
       id: "b",
-      text: "main\\nworker",
+      text: "main\nworker",
       isCorrect: true,
       feedback:
         "Correct. main keeps running, prints 'main', then sleep(0) yields and worker finally gets to run.",

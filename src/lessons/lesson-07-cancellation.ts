@@ -30,28 +30,28 @@ asyncio.run(main())`,
   choices: [
     {
       id: "a",
-      text: "start\\nend",
+      text: "start\nend",
       isCorrect: false,
       feedback:
         "No. task.cancel() interrupts the sleep — 'end' is never reached.",
     },
     {
       id: "b",
-      text: "start\\ncancelled\\nmain saw cancellation",
+      text: "start\ncancelled\nmain saw cancellation",
       isCorrect: true,
       feedback:
         "Correct. CancelledError is raised inside sleep(10), the except handler prints 'cancelled' and re-raises, and main's await sees it.",
     },
     {
       id: "c",
-      text: "start\\ncancelled",
+      text: "start\ncancelled",
       isCorrect: false,
       feedback:
         "No. worker re-raises CancelledError, so main's except branch also runs.",
     },
     {
       id: "d",
-      text: "cancelled\\nmain saw cancellation",
+      text: "cancelled\nmain saw cancellation",
       isCorrect: false,
       feedback:
         "No. worker reaches print('start') before cancel is scheduled.",

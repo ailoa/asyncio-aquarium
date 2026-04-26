@@ -43,7 +43,7 @@ asyncio.run(main())`,
     },
     {
       id: "d",
-      text: "timeout\\ndone",
+      text: "timeout\ndone",
       isCorrect: false,
       feedback:
         "No. slow is cancelled before it can return; 'done' is never produced.",
