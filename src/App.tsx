@@ -18,6 +18,14 @@ export function App() {
     [lesson, stepIndex]
   );
 
+  const activeLine = useMemo(() => {
+    for (let i = stepIndex - 1; i >= 0; i--) {
+      const line = lesson.trace[i]?.line;
+      if (line !== undefined) return line;
+    }
+    return undefined;
+  }, [lesson, stepIndex]);
+
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}>
       <header style={{ marginBottom: 16 }}>
@@ -63,10 +71,7 @@ export function App() {
           marginBottom: 16,
         }}
       >
-        <CodePanel
-          code={lesson.code}
-          activeLine={stepIndex > 0 ? lesson.trace[stepIndex - 1]?.line : undefined}
-        />
+        <CodePanel code={lesson.code} activeLine={activeLine} />
         <PredictionPanel question={lesson.question} choices={lesson.choices} />
       </div>
 
