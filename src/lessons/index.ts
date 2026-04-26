@@ -11,6 +11,10 @@ import { lesson09 } from "./lesson-09-coro-task-future";
 import { lesson10 } from "./lesson-10-blocking-freezes-loop";
 import { lesson11 } from "./lesson-11-async-for";
 import { lesson12 } from "./lesson-12-task-group";
+import { lesson13 } from "./lesson-13-finally-on-cancel";
+import { lesson14 } from "./lesson-14-to-thread";
+import { lesson15 } from "./lesson-15-async-context-manager";
+import { lesson16 } from "./lesson-16-backpressure";
 
 export const lessons: Lesson[] = [
   lesson01,
@@ -25,4 +29,8 @@ export const lessons: Lesson[] = [
   lesson10,
   lesson11,
   lesson12,
+  lesson13,
+  lesson14,
+  lesson15,
+  lesson16,
 ];

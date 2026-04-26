@@ -116,6 +116,14 @@ describe("lesson trace outputs", () => {
     "lesson-10-blocking-freezes-loop": ["blocking...", "done", "tick 1", "tick 2"],
     "lesson-11-async-for": ["1", "2", "3"],
     "lesson-12-task-group": ["A start", "B start", "A end", "B end", "after group"],
+    "lesson-13-finally-on-cancel": ["working", "cleanup"],
+    "lesson-14-to-thread": ["tick 0", "tick 1", "tick 2", "result"],
+    "lesson-15-async-context-manager": ["open", "using", "close"],
+    "lesson-16-backpressure": [
+      "produce 0", "consume 0",
+      "produce 1", "consume 1",
+      "produce 2", "consume 2",
+    ],
   };
 
   for (const lesson of lessons) {
