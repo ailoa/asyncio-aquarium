@@ -7,6 +7,10 @@ import { lesson05 } from "./lesson-05-sleep-time-order";
 import { lesson06 } from "./lesson-06-gather";
 import { lesson07 } from "./lesson-07-cancellation";
 import { lesson08 } from "./lesson-08-timeout";
+import { lesson09 } from "./lesson-09-coro-task-future";
+import { lesson10 } from "./lesson-10-blocking-freezes-loop";
+import { lesson11 } from "./lesson-11-async-for";
+import { lesson12 } from "./lesson-12-task-group";
 
 export const lessons: Lesson[] = [
   lesson01,
@@ -17,4 +21,8 @@ export const lessons: Lesson[] = [
   lesson06,
   lesson07,
   lesson08,
+  lesson09,
+  lesson10,
+  lesson11,
+  lesson12,
 ];

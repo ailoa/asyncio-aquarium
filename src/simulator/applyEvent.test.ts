@@ -112,6 +112,10 @@ describe("lesson trace outputs", () => {
     "lesson-06-gather": ["A start", "B start", "A end", "B end", "done"],
     "lesson-07-cancellation": ["start", "cancelled", "main saw cancellation"],
     "lesson-08-timeout": ["timeout"],
+    "lesson-09-coro-task-future": ["42", "42", "99"],
+    "lesson-10-blocking-freezes-loop": ["blocking...", "done", "tick 1", "tick 2"],
+    "lesson-11-async-for": ["1", "2", "3"],
+    "lesson-12-task-group": ["A start", "B start", "A end", "B end", "after group"],
   };
 
   for (const lesson of lessons) {
