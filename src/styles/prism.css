@@ -1,0 +1,60 @@
+/* Tomorrow Night-ish palette tuned to the app's dark background. */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #e6e6e6;
+  background: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  tab-size: 4;
+  hyphens: none;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #c8ccd4;
+}
+
+.token.string,
+.token.triple-quoted-string {
+  color: #b5d99c;
+}
+
+.token.number,
+.token.boolean {
+  color: #d99c6b;
+}
+
+.token.keyword {
+  color: #c792ea;
+}
+
+.token.builtin,
+.token.class-name {
+  color: #82aaff;
+}
+
+.token.function {
+  color: #7fdbca;
+}
+
+.token.operator {
+  color: #f78c6c;
+}
+
+.token.decorator,
+.token.annotation {
+  color: #ffcb6b;
+}
