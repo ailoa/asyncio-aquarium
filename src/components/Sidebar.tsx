@@ -4,10 +4,12 @@ type Props = {
   lessons: Lesson[];
   currentId: string;
   completed: Set<string>;
+  view: "lesson" | "reference";
   onSelect: (id: string) => void;
+  onReference: () => void;
 };
 
-export function Sidebar({ lessons, currentId, completed, onSelect }: Props) {
+export function Sidebar({ lessons, currentId, completed, view, onSelect, onReference }: Props) {
   return (
     <aside
       style={{
@@ -47,6 +49,46 @@ export function Sidebar({ lessons, currentId, completed, onSelect }: Props) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div style={{ padding: "8px 8px 2px" }}>
+        <button
+          onClick={onReference}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            width: "100%",
+            textAlign: "left",
+            padding: "7px 10px",
+            borderRadius: 6,
+            background: view === "reference" ? "var(--accent-soft)" : "transparent",
+            border: "none",
+            color: view === "reference" ? "var(--text)" : "var(--text-dim)",
+            fontWeight: view === "reference" ? 600 : 400,
+            fontSize: 12.5,
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              width: 18,
+              height: 18,
+              borderRadius: 4,
+              flexShrink: 0,
+              display: "grid",
+              placeItems: "center",
+              background: view === "reference" ? "var(--accent)" : "transparent",
+              border: view === "reference" ? "none" : "1.5px solid var(--border-strong)",
+              color: view === "reference" ? "var(--accent-fg)" : "var(--text-mute)",
+              fontSize: 10,
+              fontWeight: 700,
+            }}
+          >
+            ⊞
+          </div>
+          In the Wild
+        </button>
       </div>
 
       <div

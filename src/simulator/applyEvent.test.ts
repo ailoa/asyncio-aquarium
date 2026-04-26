@@ -124,6 +124,7 @@ describe("lesson trace outputs", () => {
       "produce 1", "consume 1",
       "produce 2", "consume 2",
     ],
+    "lesson-17-fastapi": ["stream closed"],
   };
 
   for (const lesson of lessons) {

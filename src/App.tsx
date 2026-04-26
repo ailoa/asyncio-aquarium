@@ -10,8 +10,10 @@ import { Timeline } from "./components/Timeline";
 import { OutputPanel } from "./components/OutputPanel";
 import { PredictionPanel } from "./components/PredictionPanel";
 import { WhyCard } from "./components/WhyCard";
+import { ReferencePage } from "./components/ReferencePage";
 
 export function App() {
+  const [view, setView] = useState<"lesson" | "reference">("lesson");
   const [lessonId, setLessonId] = useState(lessons[0].id);
   const lesson = lessons.find((l) => l.id === lessonId)!;
   const [stepIndex, setStepIndex] = useState(0);
@@ -80,13 +82,31 @@ export function App() {
         lessons={lessons}
         currentId={lessonId}
         completed={completed}
+        view={view}
         onSelect={(id) => {
           setLessonId(id);
           setStepIndex(0);
+          setView("lesson");
         }}
+        onReference={() => setView("reference")}
       />
 
-      <main style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+      {view === "reference" ? (
+        <div style={{ gridColumn: "2 / span 2", minWidth: 0 }}>
+          <ReferencePage
+            onSelectLesson={(n) => {
+              const l = lessons[n - 1];
+              if (l) {
+                setLessonId(l.id);
+                setStepIndex(0);
+                setView("lesson");
+              }
+            }}
+          />
+        </div>
+      ) : null}
+
+      <main style={{ display: view === "reference" ? "none" : "flex", flexDirection: "column", minWidth: 0 }}>
         <Header
           lessonNumber={lessonNumber}
           total={lessons.length}
@@ -157,7 +177,7 @@ export function App() {
         style={{
           background: "var(--bg-panel)",
           borderLeft: "1px solid var(--border)",
-          display: "flex",
+          display: view === "reference" ? "none" : "flex",
           flexDirection: "column",
         }}
       >

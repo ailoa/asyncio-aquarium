@@ -15,6 +15,7 @@ import { lesson13 } from "./lesson-13-finally-on-cancel";
 import { lesson14 } from "./lesson-14-to-thread";
 import { lesson15 } from "./lesson-15-async-context-manager";
 import { lesson16 } from "./lesson-16-backpressure";
+import { lesson17 } from "./lesson-17-fastapi";
 
 export const lessons: Lesson[] = [
   lesson01,
@@ -33,4 +34,5 @@ export const lessons: Lesson[] = [
   lesson14,
   lesson15,
   lesson16,
+  lesson17,
 ];
