@@ -9,6 +9,7 @@ export const lesson14: Lesson = {
 import time
 
 def blocking_work():
+    # Runs in a thread — do NOT read or write async-owned state here
     time.sleep(0.5)
     return "result"
 
@@ -137,5 +138,5 @@ asyncio.run(main())`,
     { kind: "complete", taskId: "main", line: 18 },
   ],
   explanation:
-    "to_thread is not just 'yields and comes back later' — the blocking function runs in a real OS thread, concurrently with the event loop. That's why result can appear between two ticks. Compare with lesson 10: time.sleep inside the loop froze everything; to_thread moves the blocking call off the loop entirely. Thread safety is your responsibility: don't share mutable async state with the thread.",
+    "to_thread is not just 'yields and comes back later' — the blocking function runs in a real OS thread, concurrently with the event loop. That's why result can appear between two ticks. Compare with lesson 10: time.sleep inside the loop froze everything; to_thread moves the blocking call off the loop entirely.\n\nThread safety: because the thread and the loop run at the same time, any state they share can be read and written simultaneously. For example, if blocking_work appended to a list while the loop was also iterating it, the list could be corrupted mid-iteration — no error, just wrong data. Python's GIL reduces (but does not eliminate) this risk. The safe rule: pass data in and out via the return value and arguments only. If you must share state, coordinate with threading.Lock (for the thread side) or asyncio.Queue (to hand values back to the loop safely).",
 };
