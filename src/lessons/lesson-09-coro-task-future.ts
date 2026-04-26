@@ -26,21 +26,21 @@ async def main():
     print(await fut)    # await waits for set_result on the future
 
 asyncio.run(main())`,
-  question: "Which of the three runs without anyone awaiting it?",
+  question: "Which of the three is queued by the event loop to run on its own?",
   choices: [
     {
       id: "a",
       text: "the coroutine",
       isCorrect: false,
       feedback:
-        "No. A coroutine object is inert — its body runs only when something awaits it.",
+        "No. A coroutine object is inert — it only runs when something awaits it.",
     },
     {
       id: "b",
       text: "the task",
       isCorrect: true,
       feedback:
-        "Correct. create_task hands the coroutine to the loop, which runs it as soon as it yields. Nobody has to await it.",
+        "Correct. create_task adds the coroutine to the loop's ready queue. It doesn't run immediately — main keeps running — but the loop will pick it up the next time main yields. No await required.",
     },
     {
       id: "c",
