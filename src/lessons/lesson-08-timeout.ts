@@ -85,7 +85,7 @@ asyncio.run(main())`,
     {
       kind: "time_advance",
       to: 1,
-      note: "Loop advances to the next deadline — wait_for's timer fires first.",
+      note: "Loop blocks waiting for timers. wait_for's 1-unit timer fires before slow's sleep(10).",
     },
     {
       kind: "cancel",

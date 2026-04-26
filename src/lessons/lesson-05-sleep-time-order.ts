@@ -80,7 +80,7 @@ asyncio.run(main())`,
     {
       kind: "time_advance",
       to: 1,
-      note: "Nothing is ready. Loop fast-forwards to the next wake time (t=1).",
+      note: "Nothing is ready. The loop blocks until the earliest sleeper's timer fires (t=1).",
     },
     { kind: "wake", taskId: "B", line: 5 },
     { kind: "start_task", taskId: "B", line: 6 },
