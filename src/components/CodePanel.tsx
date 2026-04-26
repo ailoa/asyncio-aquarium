@@ -14,7 +14,7 @@ export function CodePanel({ code, activeLine }: Props) {
       style={{
         background: "#1a1d24",
         borderRadius: 8,
-        overflow: "hidden",
+        overflowX: "auto",
         fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
         fontSize: 13,
         lineHeight: 1.5,
@@ -34,6 +34,7 @@ export function CodePanel({ code, activeLine }: Props) {
               borderLeft: isActive ? "2px solid #3b82f6" : "2px solid transparent",
               padding: "0 12px 0 0",
               whiteSpace: "pre",
+              minWidth: "max-content",
             }}
           >
             <span
