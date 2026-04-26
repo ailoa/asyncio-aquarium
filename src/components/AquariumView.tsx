@@ -56,7 +56,7 @@ export function AquariumView({ state }: Props) {
       <Column title="Running" ids={running} state={state} accent="#3b82f6" />
       <Column title="Ready" ids={state.readyQueue} state={state} accent="#a3a3a3" />
       <Column
-        title="Sleeping / Waiting"
+        title="Waiting / Sleeping"
         ids={[...state.sleepingTaskIds, ...state.waitingTaskIds]}
         state={state}
         accent="#a37b3b"
