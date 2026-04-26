@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyEvent, replayTrace } from "./applyEvent";
 import { createInitialState } from "./initialState";
+import { lessons } from "../lessons";
 import type { TraceEvent } from "./types";
 
 describe("applyEvent", () => {
@@ -99,4 +100,24 @@ describe("applyEvent", () => {
     const s = replayTrace(trace);
     expect(s.output).toEqual(["main", "worker"]);
   });
+});
+
+describe("lesson trace outputs", () => {
+  const expected: Record<string, string[]> = {
+    "lesson-01-coroutine-object": ["done"],
+    "lesson-02-await-coroutine": ["hello", "42"],
+    "lesson-03-create-task-schedules": ["main", "worker"],
+    "lesson-04-task-switch-at-await": ["C", "A", "B", "D"],
+    "lesson-05-sleep-time-order": ["A start", "B start", "B end", "A end"],
+    "lesson-06-gather": ["A start", "B start", "A end", "B end", "done"],
+    "lesson-07-cancellation": ["start", "cancelled", "main saw cancellation"],
+    "lesson-08-timeout": ["timeout"],
+  };
+
+  for (const lesson of lessons) {
+    it(`${lesson.id} replays to the expected output`, () => {
+      const s = replayTrace(lesson.trace);
+      expect(s.output).toEqual(expected[lesson.id]);
+    });
+  }
 });
