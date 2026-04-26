@@ -75,6 +75,7 @@ asyncio.run(main())`,
     { kind: "print", taskId: "main", value: "hello", line: 4 },
     {
       kind: "note",
+      line: 5,
       text: "hello() returns 42; control resumes in main after the await.",
     },
     { kind: "print", taskId: "main", value: "42", line: 9 },
