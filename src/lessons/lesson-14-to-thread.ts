@@ -4,54 +4,55 @@ export const lesson14: Lesson = {
   id: "lesson-14-to-thread",
   title: "Lesson 14 — asyncio.to_thread for blocking work",
   concept:
-    "asyncio.to_thread() runs a blocking function in a separate OS thread and returns an awaitable. The event loop stays free to run other tasks while the thread works.",
+    "asyncio.to_thread() runs a blocking function in a separate OS thread. The event loop stays free to run other tasks while the thread executes — the blocking work and the loop run truly in parallel.",
   code: `import asyncio
 import time
 
 def blocking_work():
-    time.sleep(1)
+    time.sleep(0.5)
     return "result"
 
 async def ticker():
     for i in range(3):
         print("tick", i)
-        await asyncio.sleep(0)
+        await asyncio.sleep(0.4)
 
 async def main():
-    asyncio.create_task(ticker())
+    t = asyncio.create_task(ticker())
     result = await asyncio.to_thread(blocking_work)
     print(result)
+    await t
 
 asyncio.run(main())`,
-  question: "What gets printed, in order?",
+  question: "When does 'result' print, relative to the ticks?",
   choices: [
     {
       id: "a",
-      text: "result\ntick 0\ntick 1\ntick 2",
+      text: "Before any tick — to_thread is instant.",
       isCorrect: false,
       feedback:
-        "No. main suspends at to_thread, so ticker runs first.",
+        "No. blocking_work takes 0.5s, which is more than one tick interval.",
     },
     {
       id: "b",
-      text: "tick 0\ntick 1\ntick 2\nresult",
-      isCorrect: true,
+      text: "After all ticks — to_thread still blocks the loop.",
+      isCorrect: false,
       feedback:
-        "Correct. to_thread offloads blocking_work to a thread and yields. The loop is free to run ticker while the thread works. main resumes only after blocking_work returns.",
+        "No. to_thread runs blocking_work in a separate thread. The loop is free, so ticker keeps running in parallel.",
     },
     {
       id: "c",
-      text: "blocking...\ntick 0\ntick 1\ntick 2\nresult",
-      isCorrect: false,
+      text: "Between tick 1 and tick 2.",
+      isCorrect: true,
       feedback:
-        "blocking_work has no print statement — it just sleeps and returns.",
+        "Correct. The thread finishes at t=0.5s. ticker's next wake is at t=0.8s. So result prints in between — proof the thread ran concurrently with the loop.",
     },
     {
       id: "d",
-      text: "tick 0\nresult\ntick 1\ntick 2",
+      text: "Between tick 0 and tick 1.",
       isCorrect: false,
       feedback:
-        "No. blocking_work finishes after ticker is done (ticker uses sleep(0), blocking_work uses 1 second).",
+        "No. blocking_work takes 0.5s, but tick 1 fires at t=0.4s — the thread isn't done yet.",
     },
   ],
   trace: [
@@ -74,7 +75,7 @@ asyncio.run(main())`,
     {
       kind: "note",
       line: 15,
-      text: "to_thread(blocking_work) starts blocking_work in an OS thread and returns an awaitable.",
+      text: "to_thread(blocking_work) starts blocking_work in an OS thread. The loop is free immediately.",
     },
     {
       kind: "await",
@@ -82,30 +83,59 @@ asyncio.run(main())`,
       targetId: "to_thread",
       yields: true,
       line: 15,
-      note: "main suspends. The loop is free while the thread runs in the background.",
+      note: "main suspends. Thread runs concurrently while the loop schedules other tasks.",
     },
     { kind: "start_task", taskId: "ticker", line: 10 },
     { kind: "print", taskId: "ticker", value: "tick 0", line: 10 },
-    { kind: "sleep", taskId: "ticker", duration: 0, line: 11 },
+    { kind: "sleep", taskId: "ticker", duration: 0.4, line: 11 },
+    {
+      kind: "time_advance",
+      to: 0.4,
+      note: "t=0.4s — ticker's timer fires. Thread still running.",
+    },
     { kind: "wake", taskId: "ticker", line: 11 },
     { kind: "start_task", taskId: "ticker", line: 10 },
     { kind: "print", taskId: "ticker", value: "tick 1", line: 10 },
-    { kind: "sleep", taskId: "ticker", duration: 0, line: 11 },
-    { kind: "wake", taskId: "ticker", line: 11 },
-    { kind: "start_task", taskId: "ticker", line: 10 },
-    { kind: "print", taskId: "ticker", value: "tick 2", line: 10 },
-    { kind: "sleep", taskId: "ticker", duration: 0, line: 11 },
-    { kind: "complete", taskId: "ticker", line: 11 },
+    { kind: "sleep", taskId: "ticker", duration: 0.4, line: 11 },
+    {
+      kind: "time_advance",
+      to: 0.5,
+      note: "t=0.5s — blocking_work finishes in its thread. main is woken. ticker still sleeping until t=0.8.",
+    },
     {
       kind: "wake",
       taskId: "main",
       line: 15,
-      note: "blocking_work finished in its thread. main is woken with the return value.",
+      note: "Thread done. main resumes before ticker's next tick.",
     },
     { kind: "start_task", taskId: "main", line: 16 },
     { kind: "print", taskId: "main", value: "result", line: 16 },
+    {
+      kind: "await",
+      taskId: "main",
+      targetId: "ticker",
+      yields: true,
+      line: 17,
+      note: "main waits for ticker to finish.",
+    },
+    {
+      kind: "time_advance",
+      to: 0.8,
+      note: "t=0.8s — ticker's timer fires.",
+    },
+    { kind: "wake", taskId: "ticker", line: 11 },
+    { kind: "start_task", taskId: "ticker", line: 10 },
+    { kind: "print", taskId: "ticker", value: "tick 2", line: 10 },
+    {
+      kind: "note",
+      line: 9,
+      text: "range(3) exhausted after i=2. ticker returns.",
+    },
+    { kind: "complete", taskId: "ticker", line: 11 },
+    { kind: "wake", taskId: "main", line: 17 },
+    { kind: "start_task", taskId: "main", line: 17 },
     { kind: "complete", taskId: "main", line: 18 },
   ],
   explanation:
-    "to_thread is the right fix for sync-in-async: database queries, file I/O, CPU-bound work, anything that blocks the OS thread. It doesn't make blocking_work faster — it just runs it off the main thread so the loop can keep scheduling other tasks. The awaitable it returns resolves once the thread finishes. Thread safety is your responsibility: don't share mutable async state with the thread.",
+    "to_thread is not just 'yields and comes back later' — the blocking function runs in a real OS thread, concurrently with the event loop. That's why result can appear between two ticks. Compare with lesson 10: time.sleep inside the loop froze everything; to_thread moves the blocking call off the loop entirely. Thread safety is your responsibility: don't share mutable async state with the thread.",
 };
