@@ -1,17 +1,27 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { lessons } from "./lessons";
 import { replayTrace } from "./simulator/applyEvent";
+import { Sidebar } from "./components/Sidebar";
+import { Header } from "./components/Header";
 import { CodePanel } from "./components/CodePanel";
-import { PredictionPanel } from "./components/PredictionPanel";
+import { Controls } from "./components/Controls";
 import { AquariumView } from "./components/AquariumView";
 import { Timeline } from "./components/Timeline";
 import { OutputPanel } from "./components/OutputPanel";
-import { Controls } from "./components/Controls";
+import { PredictionPanel } from "./components/PredictionPanel";
+import { WhyCard } from "./components/WhyCard";
 
 export function App() {
   const [lessonId, setLessonId] = useState(lessons[0].id);
   const lesson = lessons.find((l) => l.id === lessonId)!;
   const [stepIndex, setStepIndex] = useState(0);
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // Apply theme to <html> so CSS vars switch.
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   const state = useMemo(
     () => replayTrace(lesson.trace.slice(0, stepIndex)),
@@ -26,91 +36,175 @@ export function App() {
     return undefined;
   }, [lesson, stepIndex]);
 
-  return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}>
-      <header style={{ marginBottom: 16 }}>
-        <h1 style={{ margin: 0, fontSize: 22 }}>Asyncio Aquarium</h1>
-        <p style={{ margin: "4px 0 0", opacity: 0.75, fontSize: 14 }}>
-          One thread, one event loop, many suspended computations.
-        </p>
-      </header>
+  const lastEvent = lesson.trace[stepIndex - 1];
+  const isComplete = stepIndex >= lesson.trace.length;
+  useEffect(() => {
+    if (isComplete) setCompleted((s) => new Set(s).add(lesson.id));
+  }, [isComplete, lesson.id]);
 
-      <nav style={{ marginBottom: 16 }}>
-        <select
-          value={lessonId}
-          onChange={(e) => {
-            setLessonId(e.target.value);
-            setStepIndex(0);
-          }}
+  // Lesson number from index in array
+  const lessonNumber = lessons.findIndex((l) => l.id === lesson.id) + 1;
+  // Strip "Lesson N — " prefix from title for the header (Sidebar already has the number)
+  const cleanTitle = lesson.title.replace(/^Lesson \d+\s*[—-]\s*/, "");
+
+  // Keyboard shortcuts: ← → for stepping
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === "ArrowRight") setStepIndex((i) => Math.min(lesson.trace.length, i + 1));
+      else if (e.key === "ArrowLeft") setStepIndex((i) => Math.max(0, i - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lesson.trace.length]);
+
+  const prev = lessons[lessonNumber - 2];
+  const next = lessons[lessonNumber];
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        gridTemplateColumns: "240px 1fr 360px",
+        background: "var(--bg)",
+        color: "var(--text)",
+        fontSize: 13,
+        lineHeight: 1.45,
+      }}
+    >
+      <Sidebar
+        lessons={lessons}
+        currentId={lessonId}
+        completed={completed}
+        onSelect={(id) => {
+          setLessonId(id);
+          setStepIndex(0);
+        }}
+      />
+
+      <main style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <Header
+          lessonNumber={lessonNumber}
+          total={lessons.length}
+          title={cleanTitle}
+          theme={theme}
+          onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+        />
+
+        <div
           style={{
-            padding: "6px 10px",
-            background: "#1f2530",
-            color: "#e6e6e6",
-            border: "1px solid #2a2f3a",
-            borderRadius: 6,
+            margin: "14px 22px 0",
+            padding: "11px 14px",
+            background: "var(--bg-panel)",
+            borderLeft: "2px solid var(--accent)",
+            borderRadius: "0 6px 6px 0",
+            fontSize: 13.5,
           }}
         >
-          {lessons.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.title}
-            </option>
-          ))}
-        </select>
-      </nav>
+          {lesson.concept}
+        </div>
 
-      <section style={{ marginBottom: 16 }}>
-        <h2 style={{ fontSize: 18, margin: "0 0 4px" }}>{lesson.title}</h2>
-        <p style={{ margin: 0, opacity: 0.85 }}>{lesson.concept}</p>
-      </section>
+        <div style={{ padding: "14px 22px 0" }}>
+          <CodePanel
+            code={lesson.code}
+            activeLine={activeLine}
+            stepIndex={stepIndex}
+            totalSteps={lesson.trace.length}
+          />
+        </div>
 
-      <div
+        <div style={{ padding: "14px 22px 0" }}>
+          <Controls
+            stepIndex={stepIndex}
+            total={lesson.trace.length}
+            lastEvent={lastEvent}
+            onPrev={() => setStepIndex((i) => Math.max(0, i - 1))}
+            onNext={() => setStepIndex((i) => Math.min(lesson.trace.length, i + 1))}
+            onReset={() => setStepIndex(0)}
+            onJump={setStepIndex}
+          />
+        </div>
+
+        <div style={{ padding: "14px 22px 0" }}>
+          <AquariumView state={state} />
+        </div>
+
+        <div
+          style={{
+            padding: "14px 22px 18px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1.4fr",
+            gap: 14,
+            flex: "1 1 auto",
+            minHeight: 0,
+          }}
+        >
+          <OutputPanel timeline={state.timeline} />
+          <Timeline
+            events={state.timeline}
+            total={lesson.trace.length}
+            currentIndex={stepIndex}
+            onJump={setStepIndex}
+          />
+        </div>
+      </main>
+
+      <aside
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 16,
-          marginBottom: 16,
+          background: "var(--bg-panel)",
+          borderLeft: "1px solid var(--border)",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <CodePanel code={lesson.code} activeLine={activeLine} />
-        <PredictionPanel
-          key={lesson.id}
-          question={lesson.question}
-          choices={lesson.choices}
-        />
-      </div>
+        <div style={{ padding: "16px 18px 0", borderBottom: "1px solid var(--border)" }}>
+          <PredictionPanel
+            key={lesson.id}
+            question={lesson.question}
+            choices={lesson.choices}
+          />
+        </div>
 
-      <section style={{ marginBottom: 16 }}>
-        <Controls
-          stepIndex={stepIndex}
-          total={lesson.trace.length}
-          onPrev={() => setStepIndex((i) => Math.max(0, i - 1))}
-          onNext={() => setStepIndex((i) => Math.min(lesson.trace.length, i + 1))}
-          onReset={() => setStepIndex(0)}
-        />
-      </section>
+        <WhyCard explanation={lesson.explanation} />
 
-      <section style={{ marginBottom: 16 }}>
-        <AquariumView state={state} />
-      </section>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <Timeline events={state.timeline} total={lesson.trace.length} currentIndex={stepIndex} />
-        <OutputPanel lines={state.output} />
-      </div>
-
-      {stepIndex >= lesson.trace.length && (
-        <section
+        <div
           style={{
-            marginTop: 20,
-            padding: 12,
-            background: "#161922",
-            borderRadius: 8,
-            fontSize: 14,
+            marginTop: "auto",
+            padding: "12px 14px",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            gap: 8,
           }}
         >
-          <strong>Why:</strong> {lesson.explanation}
-        </section>
-      )}
+          <button
+            disabled={!prev}
+            onClick={() => prev && (setLessonId(prev.id), setStepIndex(0))}
+            style={navBtn(false)}
+          >
+            ← {prev ? `Lesson ${lessonNumber - 1}` : "—"}
+          </button>
+          <button
+            disabled={!next}
+            onClick={() => next && (setLessonId(next.id), setStepIndex(0))}
+            style={navBtn(true)}
+          >
+            {next ? `Lesson ${lessonNumber + 1}` : "End"} →
+          </button>
+        </div>
+      </aside>
     </div>
   );
+}
+
+function navBtn(primary: boolean): React.CSSProperties {
+  return {
+    flex: 1,
+    padding: "8px 11px",
+    borderRadius: 6,
+    background: primary ? "var(--accent)" : "var(--bg-inset)",
+    color: primary ? "var(--accent-fg)" : "var(--text)",
+    border: `1px solid ${primary ? "var(--accent)" : "var(--border)"}`,
+    fontSize: 12,
+  };
 }
